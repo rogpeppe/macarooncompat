@@ -1,3 +1,6 @@
+// Copyright 2015 Canonical Ltd.
+// Licensed under the LGPL, see LICENCE file for details.
+
 package macarooncompat
 
 import (

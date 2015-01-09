@@ -1,4 +1,8 @@
+// Copyright 2015 Canonical Ltd.
+// Licensed under the LGPL, see LICENCE file for details.
+
 package macarooncompat
+
 import (
 	"gopkg.in/macaroon.v1"
 )
@@ -41,7 +45,7 @@ func (m goMacaroon) Verify(rootKey []byte, check func(caveat string) error, disc
 	return m.Verify(rootKey, check, discharges)
 }
 
-type goMacaroonPackage struct {}
+type goMacaroonPackage struct{}
 
 func (goMacaroonPackage) New(rootKey []byte, id, loc string) (Macaroon, error) {
 	m, err := macaroon.New(rootKey, id, loc)

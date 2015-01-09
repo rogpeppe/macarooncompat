@@ -1,3 +1,6 @@
+// Copyright 2015 Canonical Ltd.
+// Licensed under the LGPL, see LICENCE file for details.
+
 package macarooncompat
 
 type Macaroon interface {
@@ -16,13 +19,13 @@ type Package interface {
 	New(rootKey []byte, id, loc string) (Macaroon, error)
 }
 
-var Implementations =  []struct{
+var Implementations = []struct {
 	Name string
-	Pkg Package
+	Pkg  Package
 }{{
 	Name: "go",
-	Pkg: goMacaroonPackage{},
+	Pkg:  goMacaroonPackage{},
 }, {
 	Name: "libmacaroons",
-	Pkg: libMacaroonPkg{},
+	Pkg:  libMacaroonPkg{},
 }}

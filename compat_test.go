@@ -1,17 +1,21 @@
-package macarooncompat_test
-import (
-	"fmt"
-	"testing"
-	"io"
-	"crypto/rand"
+// Copyright 2015 Canonical Ltd.
+// Licensed under the LGPL, see LICENCE file for details.
 
-	"gopkg.in/macaroon.v1"
-	gc "gopkg.in/check.v1"
+package macarooncompat_test
+
+import (
+	"crypto/rand"
+	"fmt"
+	"io"
+	"testing"
+
 	mcompat "github.com/go-macaroon/macaroon-compatibility"
 	jc "github.com/juju/testing/checkers"
+	gc "gopkg.in/check.v1"
+	"gopkg.in/macaroon.v1"
 )
 
-type suite struct{
+type suite struct {
 	origRandReader io.Reader
 }
 
@@ -60,22 +64,22 @@ func checkConsistency(c *gc.C, f func(mcompat.Package) (interface{}, error)) {
 }
 
 var signatureTests = []struct {
-	about string
-	macaroon macaroonSpec
+	about           string
+	macaroon        macaroonSpec
 	expectSignature string
 }{{
 	about: "no caveats, from libmacaroons example",
 	macaroon: macaroonSpec{
-		rootKey: "this is our super secret key; only we should know it",
-		id: "we used our secret key",
+		rootKey:  "this is our super secret key; only we should know it",
+		id:       "we used our secret key",
 		location: "http://mybank",
 	},
 	expectSignature: "e3d9e02908526c4c0039ae15114115d97fdd68bf2ba379b342aaf0f617d0552f",
 }, {
 	about: "one caveat, from libmacaroons example",
 	macaroon: macaroonSpec{
-		rootKey: "this is our super secret key; only we should know it",
-		id: "we used our secret key",
+		rootKey:  "this is our super secret key; only we should know it",
+		id:       "we used our secret key",
 		location: "http://mybank",
 		caveats: []caveat{{
 			condition: "account = 3735928559",
@@ -85,8 +89,8 @@ var signatureTests = []struct {
 }, {
 	about: "two caveats, from libmacaroons example",
 	macaroon: macaroonSpec{
-		rootKey: "this is our super secret key; only we should know it",
-		id: "we used our secret key",
+		rootKey:  "this is our super secret key; only we should know it",
+		id:       "we used our secret key",
 		location: "http://mybank",
 		caveats: []caveat{{
 			condition: "account = 3735928559",
@@ -98,8 +102,8 @@ var signatureTests = []struct {
 }, {
 	about: "three caveats, from libmacaroons example",
 	macaroon: macaroonSpec{
-		rootKey: "this is our super secret key; only we should know it",
-		id: "we used our secret key",
+		rootKey:  "this is our super secret key; only we should know it",
+		id:       "we used our secret key",
 		location: "http://mybank",
 		caveats: []caveat{{
 			condition: "account = 3735928559",
@@ -113,8 +117,8 @@ var signatureTests = []struct {
 }, {
 	about: "one caveat, from second libmacaroons example",
 	macaroon: macaroonSpec{
-		rootKey: "this is a different super-secret key; never use the same secret twice",
-		id: "we used our other secret key",
+		rootKey:  "this is a different super-secret key; never use the same secret twice",
+		id:       "we used our other secret key",
 		location: "http://mybank",
 		caveats: []caveat{{
 			condition: "account = 3735928559",
@@ -124,15 +128,15 @@ var signatureTests = []struct {
 }, {
 	about: "one 3rd party caveat, from second libmacaroons example",
 	macaroon: macaroonSpec{
-		rootKey: "this is a different super-secret key; never use the same secret twice",
-		id: "we used our other secret key",
+		rootKey:  "this is a different super-secret key; never use the same secret twice",
+		id:       "we used our other secret key",
 		location: "http://mybank",
 		caveats: []caveat{{
 			condition: "account = 3735928559",
 		}, {
-			rootKey: "4; guaranteed random by a fair toss of the dice",
+			rootKey:   "4; guaranteed random by a fair toss of the dice",
 			condition: "this was how we remind auth of key/pred",
-			location: "http://auth.mybank/",
+			location:  "http://auth.mybank/",
 		}},
 	},
 	expectSignature: "d27db2fd1f22760e4c3dae8137e2d8fc1df6c0741c18aed4b97256bf78d1f55c",
@@ -155,19 +159,19 @@ func (*suite) TestSignature(c *gc.C) {
 func (*suite) TestBind(c *gc.C) {
 	checkConsistency(c, func(pkg mcompat.Package) (interface{}, error) {
 		_, macaroons := makeMacaroons(pkg, []macaroonSpec{{
-			rootKey: "this is a different super-secret key; never use the same secret twice",
-			id: "we used our other secret key",
+			rootKey:  "this is a different super-secret key; never use the same secret twice",
+			id:       "we used our other secret key",
 			location: "http://mybank",
 			caveats: []caveat{{
 				condition: "account = 3735928559",
 			}, {
-				rootKey: "4; guaranteed random by a fair toss of the dice",
+				rootKey:   "4; guaranteed random by a fair toss of the dice",
 				condition: "this was how we remind auth of key/pred",
-				location: "http://auth.mybank/",
+				location:  "http://auth.mybank/",
 			}},
 		}, {
 			rootKey: "4; guaranteed random by a fair toss of the dice",
-			id: "this was how we remind auth of key/pred",
+			id:      "this was how we remind auth of key/pred",
 			caveats: []caveat{{
 				condition: "time < 2015-01-01T00:00",
 			}},
@@ -178,7 +182,6 @@ func (*suite) TestBind(c *gc.C) {
 		return sig, nil
 	})
 }
-
 
 func macStr(m mcompat.Macaroon) string {
 	data, err := m.MarshalBinary()
